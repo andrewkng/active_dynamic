@@ -10,7 +10,8 @@ class CreateActiveDynamicAttributesTable < ActiveRecord::Migration[4.2]
       t.integer :datatype
       t.text :value
       t.boolean :required, null: false, default: false
-
+      t.integer :position
+      t.string :section
       t.timestamps
     end
 
