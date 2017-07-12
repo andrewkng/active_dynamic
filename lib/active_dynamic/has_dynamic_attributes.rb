@@ -61,10 +61,21 @@ module ActiveDynamic
 
     def resolve_combined
       attributes = resolve_from_db
-      resolve_from_provider.each do |attribute|
-        attributes << ActiveDynamic::Attribute.new(attribute.as_json) unless attributes.find { |attr| attr.name == attribute.name }
+      combined_attributes = []
+
+      resolve_from_provider.each_with_index do |attribute, index|
+
+        if attributes.find{|attr| attr.name == attribute.name }
+          combined_attributes << attributes.find { |attr| attr.name == attribute.name }
+          if combined_attributes[index].position != attribute.position
+            puts "BEFORE #{combined_attributes[index].position}"
+            combined_attributes[index].update_attributes(:position => attribute.position)
+            puts "AFTER #{combined_attributes[index].position}"
+          end
+        end
+        combined_attributes << ActiveDynamic::Attribute.new(attribute.as_json) unless attributes.find { |attr| attr.name == attribute.name }
       end
-      attributes
+      combined_attributes
     end
 
     def resolve_from_db
